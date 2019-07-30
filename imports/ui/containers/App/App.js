@@ -5,25 +5,20 @@ import Todo from "../../components/ToDo";
 import ToDoCount from "../../components/ToDoCount";
 import ClearButton from "../../components/ClearButton";
 import Header from "../../components/Header";
+import { ToDos } from "../../../api/todo";
+
+import { withTracker } from "meteor/react-meteor-data";
 
 //Start of App component
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      todos: [
-        { id: 0, title: "Learn React", complete: false },
-        { id: 1, title: "Learn Redux", complete: true },
-        { id: 2, title: "Learn Meteor", complete: false },
-        { id: 3, title: "Learn React Native", complete: false }
-      ]
-    };
     this.toDoInput = React.createRef();
   }
 
   handleComplete = id => {
-    const todos = this.state.todos.map(todo => {
-      if (todo.id === id) {
+    const todos = this.props.todos.map(todo => {
+      if (todo._id === id) {
         todo.complete = !todo.complete;
       }
       return todo;
@@ -33,14 +28,14 @@ export default class App extends Component {
   };
 
   removeTodo = id => {
-    const todos = this.state.todos.filter(todo => {
-      return todo.id !== id;
+    const todos = this.props.todos.filter(todo => {
+      return todo._id !== id;
     });
     this.setState({ todos });
   };
 
   clearCompleted = () => {
-    const todos = this.state.todos.filter(todo => !todo.complete);
+    const todos = this.props.todos.filter(todo => !todo.complete);
     this.setState({ todos });
   };
 
@@ -48,10 +43,9 @@ export default class App extends Component {
     event.preventDefault();
     let toDoInput = this.toDoInput.current;
     if (toDoInput.value) {
-      const id = this.state.todos.length + 1; // update id
       const newTodos = [
         ...this.state.todos,
-        { id, title: toDoInput.value, complete: false }
+        { title: toDoInput.value, complete: false }
       ];
       this.setState({
         todos: newTodos
@@ -65,7 +59,7 @@ export default class App extends Component {
   }
 
   render() {
-    let numberCompleted = this.state.todos.filter(todo => {
+    let numberCompleted = this.props.todos.filter(todo => {
       return todo.complete === true;
     }).length;
 
@@ -80,17 +74,17 @@ export default class App extends Component {
             </form>
           </div>
           <ul>
-            {this.state.todos.map(todo => (
+            {this.props.todos.map(todo => (
               <Todo
                 item={todo}
-                key={todo.id}
+                key={todo._id}
                 handleComplete={this.handleComplete}
                 removeTodo={this.removeTodo}
               />
             ))}
           </ul>
           <div className="todo-admin">
-            <ToDoCount number={this.state.todos.length - numberCompleted} />
+            <ToDoCount number={this.props.todos.length - numberCompleted} />
             {numberCompleted > 0 ? (
               <ClearButton
                 clearCompleted={this.clearCompleted}
@@ -103,3 +97,16 @@ export default class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  todos: PropTypes.array.isRequired
+};
+App.defaultTypes = {
+  todos: []
+};
+
+export default withTracker(() => {
+  return {
+    todos: ToDos.find({}).fetch()
+  };
+})(App);
