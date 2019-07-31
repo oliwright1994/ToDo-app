@@ -19,6 +19,9 @@ Meteor.methods({
     }
     ToDos.remove({ _id: todo._id });
   },
+  "todos.clearCompleted"(user) {
+    ToDos.remove({ complete: true, owner: user });
+  },
   "todos.addToDo"(todo, user) {
     ToDos.insert({
       title: todo,

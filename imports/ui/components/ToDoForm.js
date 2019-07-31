@@ -27,8 +27,7 @@ class ToDoForm extends Component {
   };
 
   clearCompleted = () => {
-    const completed = ToDos.find({ complete: true });
-    completed.forEach(todo => this.removeTodo(todo));
+    Meteor.call("todos.clearCompleted", this.props.user);
   };
 
   addToDo = event => {
