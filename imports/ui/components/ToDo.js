@@ -8,10 +8,10 @@ const Todo = ({ item, handleComplete, removeTodo }) => (
       type="checkbox"
       id={item._id}
       checked={item.complete}
-      onChange={event => handleComplete(item._id, event.target.checked)}
+      onChange={event => handleComplete(item)}
     />
     <label htmlFor={item._id} />
-    <button onClick={event => removeTodo(item._id)}>
+    <button onClick={() => removeTodo(item)}>
       <i className="fa fa-trash" />
     </button>
   </li>

@@ -4,15 +4,17 @@
 #root {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
 }
 
 .todo-list {
-  align-self: center;
+  align-self: flex-start;
+  margin-top: 30px;
   background-color: white;
   border-radius: 5px;
   width: 400px;
+  overflow: hidden;
 }
 
 .todo-list h1 {
@@ -276,4 +278,27 @@
 .login-form .error-message {
   color: red;
   font-size: 0.85rem;
+}
+
+/* React transtions */
+
+.example-enter {
+  opacity: 0.01;
+  transform: translateY(-100%);
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 500ms ease;
+}
+
+.example-leave {
+  opacity: 1;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.1;
+  transform: translateX(50%);
+  transition: all 500ms ease;
 }
