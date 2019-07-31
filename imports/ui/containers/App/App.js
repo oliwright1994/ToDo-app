@@ -3,11 +3,13 @@ import "./App.css";
 import PropTypes from "prop-types";
 import Todo from "../../components/ToDo";
 import ToDoCount from "../../components/ToDoCount";
+import AddToDo from "../../components/AddToDo";
 import ClearButton from "../../components/ClearButton";
 import Header from "../../components/Header";
 import { ToDos } from "../../../api/todos";
-
+import AccountsUIWrapper from "../../components/AccountsUIWrapper";
 import { withTracker } from "meteor/react-meteor-data";
+import "../../../start-up/accounts-config";
 
 //Start of App component
 class App extends Component {
@@ -27,8 +29,6 @@ class App extends Component {
   clearCompleted = () => {
     const completed = ToDos.find({ complete: true });
     completed.forEach(todo => ToDos.remove({ _id: todo._id }));
-
-    ToDos.remove({ complete: true });
   };
 
   addToDo = event => {
@@ -51,33 +51,33 @@ class App extends Component {
     }).length;
 
     return (
-      <div>
+      <div className="app-wrapper">
+        <div className="login-wrapper">
+          <AccountsUIWrapper />
+        </div>
         <div className="todo-list">
           <Header />
-          <div className="add-todo">
-            <form name="addTodo" onSubmit={this.addToDo}>
-              <input type="text" ref={this.toDoInput} />
-              <span>(press enter to add)</span>
-            </form>
-          </div>
-          <ul>
-            {this.props.todos.map(todo => (
-              <Todo
-                item={todo}
-                key={todo._id}
-                handleComplete={this.handleComplete}
-                removeTodo={this.removeTodo}
-              />
-            ))}
-          </ul>
-          <div className="todo-admin">
-            <ToDoCount number={this.props.todos.length - numberCompleted} />
-            {numberCompleted > 0 ? (
-              <ClearButton
-                clearCompleted={this.clearCompleted}
-                numberCompleted={numberCompleted}
-              />
-            ) : null}
+          <div>
+            <AddToDo focusTarget={this.toDoInput} addToDo={this.addToDo} />
+            <ul>
+              {this.props.todos.map(todo => (
+                <Todo
+                  item={todo}
+                  key={todo._id}
+                  handleComplete={this.handleComplete}
+                  removeTodo={this.removeTodo}
+                />
+              ))}
+            </ul>
+            <div className="todo-admin">
+              <ToDoCount number={this.props.todos.length - numberCompleted} />
+              {numberCompleted > 0 ? (
+                <ClearButton
+                  clearCompleted={this.clearCompleted}
+                  numberCompleted={numberCompleted}
+                />
+              ) : null}
+            </div>
           </div>
         </div>
       </div>
@@ -94,6 +94,8 @@ App.defaultTypes = {
 
 export default withTracker(() => {
   return {
+    currentUser: Meteor.user(),
+    currentUserId: Meteor.userId(),
     todos: ToDos.find({}).fetch()
   };
 })(App);
