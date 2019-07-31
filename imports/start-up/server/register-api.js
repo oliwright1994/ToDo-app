@@ -1,1 +1,1 @@
-import ToDos from "../../api/todo";
+import ToDos from "../../api/todos";

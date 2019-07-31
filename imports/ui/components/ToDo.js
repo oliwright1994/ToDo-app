@@ -2,16 +2,16 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 
 const Todo = ({ item, handleComplete, removeTodo }) => (
-  <li className={`todo-item ${item.id}`}>
+  <li className={`todo-item ${item._id}`}>
     {item.title}
     <input
       type="checkbox"
-      id={item.id}
+      id={item._id}
       checked={item.complete}
-      onChange={event => handleComplete(item.id)}
+      onChange={event => handleComplete(item._id, event.target.checked)}
     />
-    <label htmlFor={item.id} />
-    <button onClick={event => removeTodo(item.id)}>
+    <label htmlFor={item._id} />
+    <button onClick={event => removeTodo(item._id)}>
       <i className="fa fa-trash" />
     </button>
   </li>

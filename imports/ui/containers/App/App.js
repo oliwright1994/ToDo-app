@@ -5,7 +5,7 @@ import Todo from "../../components/ToDo";
 import ToDoCount from "../../components/ToDoCount";
 import ClearButton from "../../components/ClearButton";
 import Header from "../../components/Header";
-import { ToDos } from "../../../api/todo";
+import { ToDos } from "../../../api/todos";
 
 import { withTracker } from "meteor/react-meteor-data";
 
@@ -16,42 +16,29 @@ class App extends Component {
     this.toDoInput = React.createRef();
   }
 
-  handleComplete = id => {
-    const todos = this.props.todos.map(todo => {
-      if (todo._id === id) {
-        todo.complete = !todo.complete;
-      }
-      return todo;
-    });
-
-    this.setState({ todos });
+  handleComplete = (id, checked) => {
+    ToDos.update({ _id: id }, { $set: { complete: !!checked } });
   };
 
   removeTodo = id => {
-    const todos = this.props.todos.filter(todo => {
-      return todo._id !== id;
-    });
-    this.setState({ todos });
+    ToDos.remove({ _id: id });
   };
 
   clearCompleted = () => {
-    const todos = this.props.todos.filter(todo => !todo.complete);
-    this.setState({ todos });
+    const completed = ToDos.find({ complete: true });
+    completed.forEach(todo => ToDos.remove({ _id: todo._id }));
+
+    ToDos.remove({ complete: true });
   };
 
   addToDo = event => {
     event.preventDefault();
     let toDoInput = this.toDoInput.current;
-    if (toDoInput.value) {
-      const newTodos = [
-        ...this.state.todos,
-        { title: toDoInput.value, complete: false }
-      ];
-      this.setState({
-        todos: newTodos
-      });
-      toDoInput.value = "";
-    }
+    ToDos.insert({
+      title: toDoInput.value,
+      complete: false
+    });
+    toDoInput.value = "";
   };
 
   componentDidMount() {
