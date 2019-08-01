@@ -37,9 +37,10 @@ const App = ({ todos, currentUser, currentUserId }) => {
 };
 
 export default withTracker(() => {
+  Meteor.subscribe("todos");
   return {
     currentUser: Meteor.user(),
     currentUserId: Meteor.userId(),
-    todos: ToDos.find({ owner: Meteor.userId() }).fetch()
+    todos: ToDos.find({}).fetch()
   };
 })(App);

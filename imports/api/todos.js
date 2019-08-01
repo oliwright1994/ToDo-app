@@ -1,4 +1,11 @@
 import { Mongo } from "meteor/mongo";
+import { Meteor } from "meteor/meteor";
+
+if (Meteor.isServer) {
+  Meteor.publish("todos", function todosPublication() {
+    return ToDos.find({ owner: this.userId });
+  });
+}
 
 Meteor.methods({
   "todos.toggleComplete"(todo, user) {
